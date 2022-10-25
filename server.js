@@ -18,7 +18,7 @@ app.use("/api/v1", taskRouter);
 
 // mongoose connection
 mongoose
-    .connect(process.env.DATABASE)
+    .connect(process.env.DATABASE, {user: 'parvej55', pass: "Parvej@55"})
     .then(() => {
         console.log("Database Connection Succesfull");
     })
