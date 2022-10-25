@@ -1,0 +1,98 @@
+const mongoose = require("mongoose");
+const validator = require("validator");
+
+const bcrypt = require("bcryptjs");
+
+const userSchema = mongoose.Schema(
+    {
+        firstName: {
+            type: String,
+            required: [true, "Please provide your first name"],
+            trim: true,
+            minLength: [3, "Name must be at least 3 characters"],
+            maxLength: [100, "Name is too large"],
+        },
+        lastName: {
+            type: String,
+            required: [true, "Please provide your last name"],
+            trim: true,
+            minLength: [3, "Name must be at least 3 characters"],
+            maxLength: [100, "Name is too large"],
+        },
+        mobile: {
+            type: String,
+            validate: [
+                validator.isMobilePhone,
+                "Please provide a valid contact number",
+            ],
+        },
+        image: {
+            type: String,
+            default: null,
+        },
+        email: {
+            type: String,
+            validate: [validator.isEmail, "Provide a valid Email Address"],
+            trim: true,
+            lowercase: true,
+            unique: true,
+            required: [true, "Email address is required"],
+        },
+        password: {
+            type: String,
+            required: [true, "Password is required"],
+            validate: {
+                validator: (value) => {
+                    validator.isStrongPassword(value, {
+                        minLength: 6,
+                        minLowercase: 3,
+                        minNumbers: 1,
+                        minUppercase: 1,
+                        minSymbols: 1,
+                    });
+                },
+                message: "Password {VALUE} is not strong enough",
+            },
+        },
+        confirmPassword: {
+            type: String,
+            required: [true, "Please confirm your password"],
+            validate: {
+                validator: function (value) {
+                    if (this.password === value) return;
+                },
+                message: "Passwords don't match!",
+            },
+        },
+        confirmationCode: {
+            type: Number,
+            require: true,
+        },
+    },
+    { timestamps: true, versionKey: false }
+);
+
+userSchema.pre("save", function (next) {
+    if (!this.isModified("password")) {
+        //  only run if password is modified, otherwise it will change every time we save the user!
+
+        this.confirmPassword = undefined;
+        return next();
+    }
+    const hashedPassword = bcrypt.hashSync(this.password);
+
+    this.password = hashedPassword;
+    this.generateConfirmationCode();
+    this.confirmPassword = undefined;
+
+    next();
+});
+
+userSchema.methods.generateConfirmationCode = function () {
+    let code = Math.floor(Math.random() * 899999 + 100000);
+    this.confirmationCode = code;
+};
+
+const User = mongoose.model("User", userSchema);
+
+module.exports = User;
