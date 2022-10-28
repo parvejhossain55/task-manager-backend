@@ -11,6 +11,7 @@ exports.signupController = async (req, res) => {
 
         res.status(200).json({
             status: "Success",
+            data: user,
             message: "Successfully Sign Up",
         });
     } catch (error) {
