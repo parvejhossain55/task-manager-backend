@@ -9,11 +9,20 @@ exports.signupController = async (req, res) => {
     try {
         const user = await signupService(req.body);
 
-        res.status(200).json({
-            status: "Success",
-            data: user,
-            message: "Successfully Sign Up",
-        });
+        if(user) {
+            res.status(200).json({
+                status: "Success",
+                data: user,
+                message: "Successfully Sign Up",
+            });
+        } else {
+            res.status(500).json({
+                status: "Failed",
+                data: user,
+                message: "User Regitration Failed",
+            });
+        }
+
     } catch (error) {
         res.status(500).json({
             status: "Failed",
