@@ -16,9 +16,9 @@ exports.signupController = async (req, res) => {
                 message: "Successfully Sign Up",
             });
         } else {
-            res.status(500).json({
+            res.status(200).json({
                 status: "Failed",
-                data: errors,
+                data: user,
                 message: "User Regitration Failed",
             });
         }
