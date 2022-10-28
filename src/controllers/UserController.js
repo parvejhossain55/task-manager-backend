@@ -7,12 +7,9 @@ const {
 
 exports.signupController = async (req, res) => {
     try {
-        req.checkBody(req.body.confirmPassword,req.body.password).equals(req.body.password);
-        let errors = req.validationErrors();
 
-        if(errors) {
-            const user = await signupService(req.body);
-
+        const user = await signupService(req.body);
+        if(user) {
             res.status(200).json({
                 status: "Success",
                 data: user,
