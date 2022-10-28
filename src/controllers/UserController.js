@@ -35,11 +35,19 @@ exports.signupController = async (req, res) => {
 exports.profileUpdate = async (req, res) => {
     try {
         const user = await updateProfileService(req.params.id, req.body);
-
-        res.status(200).json({
-            status: "Success",
-            message: "Profile Succesfullyy Updated.",
-        });
+        if(user) {
+            res.status(200).json({
+                status: "Success",
+                message: "Profile Succesfullyy Updated.",
+            });
+        } else {
+            res.status(500).json({
+                status: "Failed",
+                data: user,
+                message: "Profile Update Failed",
+            });
+        }
+        
     } catch (error) {
         res.status(500).json({
             status: "Failed",
