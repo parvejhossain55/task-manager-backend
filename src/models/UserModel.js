@@ -79,9 +79,13 @@ userSchema.pre("save", function (next) {
         this.confirmPassword = undefined;
         return next();
     }
-    const hashedPassword = bcrypt.hashSync(this.password);
 
-    this.password = hashedPassword;
+    if(this.password === this.confirmPassword) {
+        const hashedPassword = bcrypt.hashSync(this.password);
+        this.password = hashedPassword;
+    }
+
+    
     this.generateConfirmationCode();
     this.confirmPassword = undefined;
 
