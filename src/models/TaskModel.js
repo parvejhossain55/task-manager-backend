@@ -29,7 +29,7 @@ const taskSchema = mongoose.Schema(
             validate: [validator.isURL, "wrong task url"],
         },
         user: {
-            type: mongoose.Types.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             ref: "User",
         },
     },
