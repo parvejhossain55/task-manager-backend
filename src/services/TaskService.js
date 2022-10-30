@@ -20,7 +20,7 @@ exports.selectTaskByStatusService = async (id, status) => {
         },
         {
             $project: {
-                _id: 0,
+                _id: 1,
                 taskName: 1,
                 taskDesc: 1,
                 taskStatus: 1,

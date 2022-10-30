@@ -24,10 +24,6 @@ const taskSchema = mongoose.Schema(
             },
             default: "new",
         },
-        taskImage: {
-            type: String,
-            validate: [validator.isURL, "wrong task url"],
-        },
         user: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
