@@ -1,6 +1,7 @@
 const { comparePassword, generateToken } = require("../helpers/authHelper");
 const {
     signupService,
+    getUserByIdService,
     updateProfileService,
     findByEmailService,
 } = require("../services/UserService");
@@ -27,6 +28,31 @@ exports.signupController = async (req, res) => {
         res.status(500).json({
             status: "Failed",
             data: error,
+            message: error.message,
+        });
+    }
+};
+
+exports.getUserById = async (req, res) => {
+    try {
+        const user = await getUserByIdService(req.params.id);
+        if(user) {
+            res.status(200).json({
+                status: "Success",
+                data: user,
+                message: "Profile Succesfullyy Updated.",
+            });
+        } else {
+            res.status(500).json({
+                status: "Failed",
+                data: user,
+                message: "Profile Update Failed",
+            });
+        }
+        
+    } catch (error) {
+        res.status(500).json({
+            status: "Failed",
             message: error.message,
         });
     }
