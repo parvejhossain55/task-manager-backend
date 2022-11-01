@@ -58,6 +58,29 @@ exports.getUserById = async (req, res) => {
     }
 };
 
+exports.getUserByEmail = async (req, res) => {
+    try {
+        const user = await getUserByEmailService(req.params.email);
+        if(user) {
+            res.status(200).json({
+                status: "Success",
+                data: user,
+            });
+        } else {
+            res.status(500).json({
+                status: "Failed",
+                data: user,
+            });
+        }
+        
+    } catch (error) {
+        res.status(500).json({
+            status: "Failed",
+            message: error.message,
+        });
+    }
+};
+
 exports.profileUpdate = async (req, res) => {
     try {
         const user = await updateProfileService(req.params.id, req.body);
