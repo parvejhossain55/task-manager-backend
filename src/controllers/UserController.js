@@ -2,6 +2,7 @@ const { comparePassword, generateToken } = require("../helpers/authHelper");
 const {
     signupService,
     getUserByIdService,
+    getUserByEmailService,
     updateProfileService,
     findByEmailService,
 } = require("../services/UserService");
