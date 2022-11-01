@@ -11,7 +11,7 @@ const router = require("express").Router();
 
 router.post("/signup", signupController);
 router.get("/user/:id", getUserById)
-router.get("/user/:email", getUserByEmail)
+router.get("/user/email/:email", getUserByEmail)
 router.put("/profileUpdate/:id", profileUpdate)
 router.post("/login", loginController);
 router.get("/me", isAuthenticated, (req, res) => {
