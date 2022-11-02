@@ -21,8 +21,8 @@ exports.verificationCodeUpdateByEmailService = async (email, code) => {
     return await User.findOneAndUpdate({ email: email }, code);
 };
 
-exports.checkVerificationCodeService = async (code) => {
-    return await User.aggregate([{$match: {confirmationCode : code}}, {$group: {_id : "$confirmationCode", total: {$sum: 1}}}]);
+exports.checkVerificationCodeService = async (code, email) => {
+    return await User.aggregate([{$match: {confirmationCode : code, email: email}}, {$group: {_id : "$confirmationCode", total: {$sum: 1}}}]);
 };
 
 exports.updateProfileService = async (id, task) => {
