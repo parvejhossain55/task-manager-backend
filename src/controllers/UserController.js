@@ -138,10 +138,7 @@ exports.ForgotEmail = async (req, res) => {
         // console.log(user[0].email)
         let email = user[0].email;
         let subject = "Forgot Password";
-        let code = Math.floor(
-            Math.pow(10, 6 - 1) +
-                Math.random() * (Math.pow(10, 6) - Math.pow(10, 6 - 1) - 1)
-        );
+        let code = Math.floor(Math.pow(10, 6 - 1) +Math.random() * (Math.pow(10, 6) - Math.pow(10, 6 - 1) - 1)).toString()
         let text = `Your verification code is : ${code}`;
         if (email) {
             verificationCodeUpdateByEmailService(email, {confirmationCode: code});
