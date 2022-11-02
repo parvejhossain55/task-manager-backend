@@ -183,7 +183,7 @@ exports.ForgotEmail = async (req, res) => {
 exports.verifyUserCode = async (req, res) => {
     try {
         const user = await checkVerificationCodeService(
-            req.body.confirmationCode
+            req.body
         );
 
         if (user[0].total === 1) {
