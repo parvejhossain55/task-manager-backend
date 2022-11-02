@@ -9,8 +9,20 @@ exports.getUserByIdService = async (id) => {
     return await User.find({ _id: id });
 };
 
-exports.getUserByEmailService = async (email) => {
+exports.ForgotEmailService = async (email) => {
     return await User.find({ email: email });
+};
+
+exports.updateProfileService = async (id, task) => {
+    return await User.findOneAndUpdate({ _id: id }, task);
+};
+
+exports.verificationCodeUpdateByEmailService = async (email, code) => {
+    return await User.findOneAndUpdate({ email: email }, code);
+};
+
+exports.checkVerificationCodeService = async (code) => {
+    return await User.aggregate([{$match: {confirmationCode : code}}, {$group: {_id : "$confirmationCode", total: {$sum: 1}}}]);
 };
 
 exports.updateProfileService = async (id, task) => {

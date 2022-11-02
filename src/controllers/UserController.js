@@ -2,16 +2,19 @@ const { comparePassword, generateToken } = require("../helpers/authHelper");
 const {
     signupService,
     getUserByIdService,
-    getUserByEmailService,
+    ForgotEmailService,
+    verificationCodeUpdateByEmailService,
+    checkVerificationCodeService,
     updateProfileService,
     findByEmailService,
 } = require("../services/UserService");
+const SendEmailUtility = require("../utils/SendEmailUtility");
+const bcrypt = require('bcryptjs');
 
 exports.signupController = async (req, res) => {
     try {
-
         const user = await signupService(req.body);
-        if(user) {
+        if (user) {
             res.status(200).json({
                 status: "Success",
                 data: user,
@@ -24,7 +27,6 @@ exports.signupController = async (req, res) => {
                 message: "User Regitration Failed",
             });
         }
-
     } catch (error) {
         res.status(500).json({
             status: "Failed",
@@ -37,7 +39,7 @@ exports.signupController = async (req, res) => {
 exports.getUserById = async (req, res) => {
     try {
         const user = await getUserByIdService(req.params.id);
-        if(user) {
+        if (user) {
             res.status(200).json({
                 status: "Success",
                 data: user,
@@ -50,30 +52,6 @@ exports.getUserById = async (req, res) => {
                 message: "Profile Update Failed",
             });
         }
-        
-    } catch (error) {
-        res.status(500).json({
-            status: "Failed",
-            message: error.message,
-        });
-    }
-};
-
-exports.getUserByEmail = async (req, res) => {
-    try {
-        const user = await getUserByEmailService(req.params.email);
-        if(user) {
-            res.status(200).json({
-                status: "Success",
-                data: user,
-            });
-        } else {
-            res.status(500).json({
-                status: "Failed",
-                data: user,
-            });
-        }
-        
     } catch (error) {
         res.status(500).json({
             status: "Failed",
@@ -85,7 +63,7 @@ exports.getUserByEmail = async (req, res) => {
 exports.profileUpdate = async (req, res) => {
     try {
         const user = await updateProfileService(req.params.id, req.body);
-        if(user) {
+        if (user) {
             res.status(200).json({
                 status: "Success",
                 message: "Profile Succesfullyy Updated.",
@@ -97,7 +75,6 @@ exports.profileUpdate = async (req, res) => {
                 message: "Profile Update Failed",
             });
         }
-        
     } catch (error) {
         res.status(500).json({
             status: "Failed",
@@ -139,7 +116,7 @@ exports.loginController = async (req, res) => {
 
         res.cookie("token", token, {
             httpOnly: true,
-            secure: true  // only workd on https protocol
+            secure: true, // only workd on https protocol
         });
 
         res.status(200).json({
@@ -151,6 +128,107 @@ exports.loginController = async (req, res) => {
         res.status(500).json({
             status: "Failed to Log in ",
             message: error.message,
+        });
+    }
+};
+
+exports.ForgotEmail = async (req, res) => {
+    try {
+        const user = await ForgotEmailService(req.params.email);
+        let email = user[0].email;
+        let subject = "Forgot Password";
+        let code = Math.floor(
+            Math.pow(10, 6 - 1) +
+                Math.random() * (Math.pow(10, 6) - Math.pow(10, 6 - 1) - 1)
+        );
+        let text = `Your verification code is : ${code}`;
+        if (email) {
+            await verificationCodeUpdateByEmailService(email, {
+                confirmationCode: code,
+            });
+
+            SendEmailUtility(email, subject, text)
+                .then((result) => {
+                    if (result) {
+                        res.status(200).json({
+                            status: "Success",
+                            message: "Email Successfully Send",
+                            data: result,
+                        });
+                    }
+                })
+                .catch((err) => {
+                    if (err) {
+                        res.status(200).json({
+                            status: "Failed",
+                            message: "Failed to Send Email",
+                            data: err,
+                        });
+                    }
+                });
+        } else {
+            res.status(500).json({
+                status: "Failed",
+                data: user,
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            status: "Failed",
+            message: error.message,
+        });
+    }
+};
+
+exports.verifyUserCode = async (req, res) => {
+    try {
+        const user = await checkVerificationCodeService(
+            req.body.confirmationCode
+        );
+
+        if (user[0].total === 1) {
+            res.status(200).json({
+                status: "success",
+                data: user[0],
+            });
+        } else {
+            res.status(500).json({
+                status: "failed",
+                data: user,
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            status: "Failed",
+            message: error,
+        });
+    }
+};
+
+exports.ChangePassword = async (req, res) => {
+    try {
+        const {email, password, repassword} = req.body;
+
+        if(password === repassword) {
+            bcrypt.hash(password, (err, data) => {
+                if(err) {
+                    res.status(500).json({
+                        status: "Failed",
+                        message: err,
+                    });
+                } else {
+                    verificationCodeUpdateByEmailService(email, {password: data})
+                    res.status(200).json({
+                        status: "success",
+                        data: data,
+                    });
+                }
+            })
+        }
+    } catch (error) {
+        res.status(500).json({
+            status: "Failed",
+            message: error,
         });
     }
 };
