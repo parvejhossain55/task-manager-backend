@@ -135,6 +135,7 @@ exports.loginController = async (req, res) => {
 exports.ForgotEmail = async (req, res) => {
     try {
         const user = await ForgotEmailService(req.params.email);
+        // console.log(user[0].email)
         let email = user[0].email;
         let subject = "Forgot Password";
         let code = Math.floor(
@@ -143,9 +144,7 @@ exports.ForgotEmail = async (req, res) => {
         );
         let text = `Your verification code is : ${code}`;
         if (email) {
-            await verificationCodeUpdateByEmailService(email, {
-                confirmationCode: code,
-            });
+            verificationCodeUpdateByEmailService(email, {confirmationCode: code});
 
             SendEmailUtility(email, subject, text)
                 .then((result) => {
@@ -182,9 +181,7 @@ exports.ForgotEmail = async (req, res) => {
 
 exports.verifyUserCode = async (req, res) => {
     try {
-        const user = await checkVerificationCodeService(
-            req.body
-        );
+        const user = await checkVerificationCodeService(req.body);
 
         if (user[0].total === 1) {
             res.status(200).json({
