@@ -65,7 +65,7 @@ const userSchema = mongoose.Schema(
             },
         },
         confirmationCode: {
-            type: Number,
+            type: String,
             require: true,
         },
     },
