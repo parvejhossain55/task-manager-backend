@@ -4,6 +4,7 @@ const {
     getUserByIdService,
     ForgotEmailService,
     verificationCodeUpdateByEmailService,
+    checkEmailAndCodeForChangePassword,
     checkVerificationCodeService,
     updateProfileService,
     findByEmailService,
@@ -188,39 +189,41 @@ exports.verifyUserCode = async (req, res) => {
         } else {
             res.status(500).json({
                 status: "failed",
-                data: user,
+                message: "Invalid verification code",
             });
         }
     } catch (error) {
-        res.status(500).json({
-            status: "Failed",
-            message: error,
-        });
+        if (error) {
+            res.status(500).json({
+                status: "Failed",
+                message: error,
+            });
+        }
     }
 };
 
 exports.ChangePassword = async (req, res) => {
     try {
-        const {email, password, repassword} = req.body;
+        const { code, email, password } = req.body;
 
-        let verify = checkVerificationCodeService({code, email})
+        const hashpass = bcrypt.hashSync(password)
 
-        if(verify) {
-            bcrypt.hash(password, (err, data) => {
-                if(err) {
-                    res.status(500).json({
-                        status: "Failed",
-                        message: err,
-                    });
-                } else {
-                    verificationCodeUpdateByEmailService(email, {password: data})
-                    res.status(200).json({
-                        status: "success",
-                        data: data,
-                    });
-                }
-            })
+        const data = await checkEmailAndCodeForChangePassword({code: code, email: email, password: hashpass})
+        if (data) {
+            res.status(200).json({
+                status: "success",
+                message: "password change and update",
+                data: data,
+            });
+        } else {
+            res.status(500).json({
+                status: "failed",
+                message: "Failed to hash password",
+                data: err
+            });
         }
+        
+        
     } catch (error) {
         res.status(500).json({
             status: "Failed",
