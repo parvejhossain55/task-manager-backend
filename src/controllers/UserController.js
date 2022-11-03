@@ -203,6 +203,9 @@ exports.ChangePassword = async (req, res) => {
     try {
         const {email, password, repassword} = req.body;
 
+        let verify = checkVerificationCodeService({code, email})
+        console.log(verify)
+
         if(password === repassword) {
             bcrypt.hash(password, (err, data) => {
                 if(err) {
