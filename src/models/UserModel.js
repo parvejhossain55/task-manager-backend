@@ -94,6 +94,6 @@ userSchema.methods.generateConfirmationCode = function () {
     this.confirmationCode = code;
 };
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model("users", userSchema);
 
 module.exports = User;
