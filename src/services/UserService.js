@@ -1,8 +1,7 @@
 const User = require("../models/UserModel");
 
 exports.signupService = async (data) => {
-    const user = await User.create(data);
-    return user;
+    return await User.create(data);
 };
 
 exports.getUserByIdService = async (id) => {
