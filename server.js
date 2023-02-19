@@ -3,8 +3,8 @@ require("dotenv").config();
 const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
-const userRouter = require("./src/routes/user");
-const taskRouter = require("./src/routes/task");
+const userRouter = require("./routes/user");
+const taskRouter = require("./routes/task");
 
 // middlewares
 app.use(express.static("./src/uploads"));
@@ -20,7 +20,8 @@ app.use("/api/v1", taskRouter);
 // .connect(process.env.LOCAL_DB)
 
 mongoose
-    .connect(process.env.DATABASE, {user: 'parvej55', pass: "Parvej@55"})
+    // .connect(process.env.DATABASE, {user: 'parvej55', pass: "Parvej@55"})
+    .connect(process.env.LOCAL_DB)
     .then(() => {
         console.log("Database Connection Succesfull");
     })

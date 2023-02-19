@@ -6,8 +6,8 @@ const SendEmailUtility = async (to, subject, text) => {
         port: 587,
         secure: false,
         auth: {
-            user: 'dorisrivera.30.26.0.222@gmail.com',
-            pass: 'BwKspVZmfEj0Xd1O'
+            user: 'sneathmoczygembarny.r.a.3.5.77@gmail.com',
+            pass: 'CyLrEwS06KNh9vPQ'
         },
         tls: {
             rejectUnauthorized: false
