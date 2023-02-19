@@ -1,6 +1,6 @@
 const { expressjwt } = require("express-jwt");
 
 exports.isAuthenticated = expressjwt({
-    secret: process.env.JWT_SECRET,
+    secret: "safsdfas34324rghjfg657543",
     algorithms: ["HS256"],
 });
