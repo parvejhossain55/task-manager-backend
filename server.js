@@ -8,8 +8,8 @@ const taskRouter = require("./routes/task");
 
 // middlewares
 app.use(express.static("./src/uploads"));
-app.use(express.json({limit: '10mb'}));
-app.use(express.urlencoded({ extended: false, limit: '10mb' }));
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: false, limit: "10mb" }));
 app.use(cors());
 
 // route middleware
@@ -18,9 +18,7 @@ app.use("/api/v1", taskRouter);
 
 // mongoose connection
 // .connect(process.env.LOCAL_DB)
-
 mongoose
-    // .connect(process.env.DATABASE, {user: 'parvej55', pass: "Parvej@55"})
     .connect(process.env.DATABASE)
     .then(() => {
         console.log("Database Connection Succesfull");
@@ -34,5 +32,6 @@ app.get("/hello", (req, res) => {
 });
 
 app.listen(process.env.PORT || 8080, () => {
-    console.log("Server Running..."+process.env.PORT);
+    console.log("Server Running..." + process.env.PORT);
 });
+

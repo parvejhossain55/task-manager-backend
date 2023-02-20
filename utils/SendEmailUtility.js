@@ -6,12 +6,12 @@ const SendEmailUtility = async (to, subject, text) => {
         port: 587,
         secure: false,
         auth: {
-            user: 'sneathmoczygembarny.r.a.3.5.77@gmail.com',
-            pass: 'CyLrEwS06KNh9vPQ'
+            user: "sneathmoczygembarny.r.a.3.5.77@gmail.com",
+            pass: "CyLrEwS06KNh9vPQ",
         },
         tls: {
-            rejectUnauthorized: false
-        }
+            rejectUnauthorized: false,
+        },
     });
 
     let mailOptions = {
